@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pavv</title>
+    
+    <!-- Import czcionki Josefin Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Import ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* RESET I BAZA */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Josefin Sans', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: default;
+        }
+
+        /* --- TŁO (BLOBS) --- */
+        .background-blobs {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -4;
+            filter: blur(90px); /* Nieco mocniejszy blur */
+            opacity: 0.7;
+            transition: transform 0.1s ease-out;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+
+        .blob-1 { width: 60vw; height: 60vw; background: #4a1c40; top: -15%; left: -15%; animation-delay: 0s; }
+        .blob-2 { width: 50vw; height: 50vw; background: #1c2e4a; bottom: -15%; right: -15%; animation-delay: -5s; }
+        .blob-3 { width: 40vw; height: 40vw; background: #1f4236; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-duration: 18s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 60px) scale(1.1); }
+        }
+
+        /* --- TŁO - GIGANTYCZNY NAPIS (Fixed High-Fashion Style) --- */
+        .bg-huge-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            
+            font-size: 35vw; /* Ogromny rozmiar */
+            font-weight: 700;
+            line-height: 1;
+            
+            /* Styl konturowy (Outline) - wygląda nowocześnie */
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.04);
+            
+            z-index: -2;
+            pointer-events: none;
+            white-space: nowrap;
+            user-select: none;
+            transition: transform 0.1s ease-out; /* Paralaksa dla tła */
+        }
+
+        /* --- GLOW ZA NAPISEM --- */
+        .mouse-glow {
+            position: fixed;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 65%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            filter: blur(40px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            mix-blend-mode: screen;
+        }
+
+        /* --- ZIARNO (NOISE) --- */
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1; 
+            opacity: 0.02; /* Bardzo subtelne */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- NAWIGACJA --- */
+        .social-nav {
+            position: absolute;
+            top: 50px;
+            display: flex;
+            gap: 40px;
+            z-index: 20;
+        }
+
+        .social-link {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.6rem;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .social-link:hover {
+            color: #fff;
+            transform: translateY(-5px);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- GŁÓWNY NAPIS --- */
+        .main-title-container {
+            z-index: 10;
+            position: relative;
+            padding: 40px;
+        }
+
+        .main-title {
+            font-weight: 500;
+            font-size: 9rem; /* Zwiększony rozmiar */
+            letter-spacing: -0.02em; /* Lekko ściśnięte dla nowoczesnego wyglądu */
+            color: #ffffff;
+            
+            /* Subtelny cień */
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            
+            transition: transform 0.1s ease-out;
+            cursor: crosshair;
+            user-select: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-title { font-size: 4.5rem; }
+            .bg-huge-text { font-size: 45vw; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05); }
+            .social-nav { gap: 30px; top: 30px; }
+            .mouse-glow { width: 300px; height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Tło Gradientowe -->
+    <div class="background-blobs" id="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- 2. Tło - Gigantyczny Napis (Outline) -->
+    <div class="bg-huge-text" id="bg-text">
+        pavv
+    </div>
+
+    <!-- 3. Glow pod myszką -->
+    <div class="mouse-glow" id="glow"></div>
+
+    <!-- 4. Ziarno (Noise) -->
+    <div class="grain-overlay"></div>
+
+    <!-- 5. Linki -->
+    <nav class="social-nav">
+        <a href="https://instagram.com" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
+        <a href="https://soundcloud.com" target="_blank" class="social-link"><i class="fab fa-soundcloud"></i></a>
+    </nav>
+
+    <!-- 6. Główny napis -->
+    <div class="main-title-container" id="title-container">
+        <h1 class="main-title" id="title">pavv</h1>
+    </div>
+
+    <script>
+        const blobs = document.getElementById('bg-blobs');
+        const bgText = document.getElementById('bg-text');
+        const title = document.getElementById('title');
+        const titleContainer = document.getElementById('title-container');
+        const glow = document.getElementById('glow');
+
+        // Śledzenie ruchu myszki (Paralaksa)
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // Przesuwanie glowa
+            glow.style.left = x + 'px';
+            glow.style.top = y + 'px';
+
+            // Normalizacja pozycji (-0.5 do 0.5)
+            const xNorm = (x / window.innerWidth) - 0.5;
+            const yNorm = (y / window.innerHeight) - 0.5;
+
+            // Efekty Paralaksy (różne prędkości dla głębi)
+            
+            // 1. Tło przesuwa się lekko w przeciwną stronę
+            blobs.style.transform = `translate(${-xNorm * 40}px, ${-yNorm * 40}px)`;
+            
+            // 2. Gigantyczny napis w tle przesuwa się bardzo wolno (daleki plan)
+            bgText.style.transform = `translate(calc(-50% + ${xNorm * 20}px), calc(-50% + ${yNorm * 20}px))`;
+
+            // 3. Główny napis przesuwa się w stronę myszki (bliski plan)
+            title.style.transform = `translate(${xNorm * 30}px, ${yNorm * 30}px)`;
+        });
+
+        // Obsługa najechania na napis (Glow)
+        titleContainer.addEventListener('mouseenter', () => {
+            glow.style.opacity = '1';
+        });
+
+        titleContainer.addEventListener('mouseleave', () => {
+            glow.style.opacity = '0';
+        });
+    </script>
+</body>
+</html>

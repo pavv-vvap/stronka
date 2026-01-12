@@ -24,7 +24,7 @@
             font-family: 'Josefin Sans', sans-serif;
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* Ważne: blokuje przewijanie */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -34,7 +34,6 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-font-smoothing: antialiased;
-            /* Zapobiega podświetlaniu przy dotyku na mobile */
             -webkit-tap-highlight-color: transparent; 
         }
 
@@ -50,8 +49,7 @@
         }
 
         @keyframes color-cycle {
-            0% { background-color: #050505; } /* baza */
-            /* Animujemy filtry wewnątrz blobów, tu tylko kontener */
+            0% { background-color: #050505; }
         }
 
         .blob {
@@ -60,7 +58,6 @@
             animation: complex-float 20s infinite ease-in-out alternate;
         }
 
-        /* Dodano osobne animacje zmiany koloru dla każdego bloba */
         @keyframes blob-color-1 { 0%{background:#4a1c40} 50%{background:#5e2a2a} 100%{background:#4a1c40} }
         @keyframes blob-color-2 { 0%{background:#1c2e4a} 50%{background:#1f4236} 100%{background:#1c2e4a} }
         @keyframes blob-color-3 { 0%{background:#1f4236} 50%{background:#1c2e4a} 100%{background:#1f4236} }
@@ -76,7 +73,7 @@
             100% { transform: translate(40px, 60px) rotate(5deg) scale(1.05); }
         }
 
-        /* --- TŁO - NAPIS --- */
+        /* --- TŁO - NAPIS (Kanit) --- */
         .bg-text-wrapper {
             position: absolute;
             top: 50%; left: 50%;
@@ -93,7 +90,7 @@
             font-family: 'Kanit', sans-serif;
             font-weight: 900;
             text-transform: uppercase;
-            font-size: 24vw; 
+            font-size: 24vw; /* Desktop size */
             line-height: 1;
             color: transparent;
             -webkit-text-stroke: 2px rgba(255, 255, 255, 0.04);
@@ -116,10 +113,12 @@
         /* --- LINKI TEKSTOWE --- */
         .social-nav {
             position: absolute;
-            top: 60px;
+            top: 60px; /* Domyślnie (Desktop) */
             display: flex;
             gap: 50px;
             z-index: 20;
+            width: 100%;
+            justify-content: center;
         }
 
         .social-text {
@@ -132,7 +131,7 @@
             letter-spacing: 3px;
             transition: all 0.3s ease;
             position: relative;
-            padding: 10px; /* Większe pole dotyku na mobile */
+            padding: 10px;
         }
 
         .social-text:hover {
@@ -158,6 +157,8 @@
             font-size: 8rem;
             position: absolute; 
             pointer-events: none;
+            /* Domyślny transition dla desktopu (myszka) */
+            transition: transform 0.1s linear; 
         }
 
         .layer-1 { color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05); filter: blur(4px); }
@@ -168,50 +169,65 @@
 
 
         /* ========================================= */
-        /* === RESPONSYWNOŚĆ (MOBILE OPTIMIZATION) === */
+        /* === RESPONSYWNOŚĆ (MOBILE FIXES) === */
         /* ========================================= */
         
         @media (max-width: 768px) {
             
-            /* 1. TŁO NAPIS - Subtelniejszy i pionowy */
+            /* 1. TŁO NAPIS - POPRAWKA WIDOCZNOŚCI */
             .bg-text-content {
-                font-size: 150px; /* Stały rozmiar, nie zależy od szerokości */
-                opacity: 0.05; /* Bardzo słabo widoczny */
-                -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
-                /* Obrót o 90 stopni - wygląda świetnie na telefonie */
-                transform: rotate(90deg) !important; 
+                /* Zmiana orientacji na pionową (czytane z góry na dół) */
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+                
+                /* Reset transformacji - writing-mode załatwia obrót */
+                transform: none !important;
+                
+                /* Dopasowanie rozmiaru */
+                font-size: 20vh; /* Rozmiar zależny od wysokości ekranu */
+                line-height: 1;
+                
+                /* ZWIĘKSZONA WIDOCZNOŚĆ */
+                opacity: 0.12; /* Wyraźniejsze */
+                -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1); /* Grubszy obrys */
+                
+                /* Pozycjonowanie absolutne na środku */
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%) !important;
             }
 
-            /* 2. NAWIGACJA - Zmniejszone odstępy */
+            /* 2. NAWIGACJA - PRZESUNIĘCIE W DÓŁ */
             .social-nav {
-                top: 40px;
-                gap: 20px;
-                width: 100%;
-                justify-content: center;
+                /* Zamiast pikseli, używamy procentów wysokości ekranu */
+                top: 15%; 
+                gap: 25px; /* Mniejszy odstęp między linkami */
             }
             
             .social-text {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
                 letter-spacing: 2px;
             }
 
-            /* 3. LOGO 3D - Mniejsze i Automatyczna Animacja */
+            /* 3. LOGO 3D - AUTOMATYCZNA ANIMACJA */
             .logo-layer {
-                font-size: 4rem; /* Mniejsze logo */
-                /* Nadpisujemy transform JS - używamy CSS animation */
-                transform: translate(0, 0) !important; 
+                font-size: 4rem; /* Mniejszy rozmiar */
+                /* Ważne: usuwamy transition, by animacja CSS działała płynnie */
+                transition: none; 
+                transform: translate(0, 0); 
                 animation: mobile-float-3d 3s infinite ease-in-out alternate;
             }
 
-            /* Każda warstwa rusza się inaczej, tworząc efekt 3D */
+            /* Definicja opóźnień dla efektu głębi */
             .layer-1 { animation-delay: 0.0s; --offset: 15px; }
             .layer-2 { animation-delay: 0.1s; --offset: 10px; }
             .layer-3 { animation-delay: 0.2s; --offset: 5px; }
             .layer-4 { animation-delay: 0.3s; --offset: 2px; }
-            .layer-5 { animation-delay: 0.4s; --offset: 0px; } /* Front stoi w miejscu */
+            .layer-5 { animation-delay: 0.4s; --offset: 0px; }
         }
 
-        /* Animacja dla mobile - symulacja 3D (rozsuwanie warstw) */
+        /* Animacja dla mobile */
         @keyframes mobile-float-3d {
             0% { transform: translateY(0); }
             100% { transform: translateY(var(--offset)); }
@@ -237,14 +253,13 @@
 
     <!-- Linki -->
     <nav class="social-nav">
-        <a href="https://instagram.com/iampavv" target="_blank" class="social-text">instagram</a>
-        <a href="https://youtube.com/@pavvek" target="_blank" class="social-text">youtube</a>
-        <a href="https://soundcloud.com/musicbypavv" target="_blank" class="social-text">soundcloud</a>
+        <a href="https://instagram.com" target="_blank" class="social-text">instagram</a>
+        <a href="https://youtube.com" target="_blank" class="social-text">youtube</a>
+        <a href="https://soundcloud.com" target="_blank" class="social-text">soundcloud</a>
     </nav>
 
     <!-- Wolumetryczne Logo -->
     <div class="logo-container" id="logo-container">
-        <!-- Dodajemy style inline dla zmiennych CSS na mobile (fallback) -->
         <div class="logo-layer layer-1" style="--offset: 12px">pavv</div>
         <div class="logo-layer layer-2" style="--offset: 9px">pavv</div>
         <div class="logo-layer layer-3" style="--offset: 6px">pavv</div>
@@ -253,22 +268,22 @@
     </div>
 
     <script>
-        // --- LOGIKA WIZUALNA (DESKTOP ONLY) ---
+        // --- LOGIKA WIZUALNA (DESKTOP) ---
         const blobs = document.getElementById('bg-blobs');
         const bgTextContent = document.getElementById('bg-text-content');
         const layers = document.querySelectorAll('.logo-layer');
 
-        // Wykrywamy czy urządzenie ma dotyk/jest małe
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        // Sprawdzamy czy to desktop (szerokość > 768px)
+        const isDesktop = window.matchMedia("(min-width: 769px)").matches;
 
-        if (!isMobile) {
+        if (isDesktop) {
             document.addEventListener('mousemove', (e) => {
                 const width = window.innerWidth;
                 const height = window.innerHeight;
                 const xVal = (e.clientX / width - 0.5) * 2;
                 const yVal = (e.clientY / height - 0.5) * 2;
 
-                // Animacja 3D logo
+                // Animacja warstw loga
                 layers.forEach((layer, index) => {
                     const depth = (4 - index) * 15; 
                     layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
@@ -276,13 +291,12 @@
 
                 // Paralaksa tła
                 blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
-                
-                // Paralaksa napisu w tle
+                // Paralaksa napisu w tle (tylko desktop)
                 bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
             });
         }
 
-        // --- SECURITY SCRIPT ---
+        // --- ZABEZPIECZENIA ---
         document.addEventListener('keydown', function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;

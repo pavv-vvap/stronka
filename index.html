@@ -10,24 +10,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;500&family=Kanit:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET I BAZA - SZTYWNE USTAWIENIA */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Krytyczne dla braku pasków przewijania */
-            background-color: #050505;
-        }
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
+            background-color: #050505;
             color: #ffffff;
             font-family: 'Josefin Sans', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: fixed; /* Zmiana na fixed zapobiega przesuwaniu */
+            /* position: fixed zapobiega przesuwaniu layoutu na mobile */
+            position: fixed; 
             top: 0;
             left: 0;
             cursor: none; 
@@ -51,7 +49,7 @@
         }
         
         body.hovering .cursor-dot {
-            transform: translate(-50%, -50%) scale(2.5);
+            transform: translate(-50%, -50%) scale(1.5);
             background-color: #fff;
             transition: transform 0.2s ease;
         }
@@ -65,7 +63,6 @@
             opacity: 0.6;
             will-change: transform;
             animation: color-cycle 60s infinite alternate linear;
-            /* Płynny powrót do pozycji */
             transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
@@ -114,12 +111,11 @@
             white-space: nowrap;
             will-change: transform;
             text-align: center;
-            /* Startujemy idealnie na środku */
             transform: translate(0, 0);
             transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* --- ZIARNO (Mocniejsze) --- */
+        /* --- ZIARNO --- */
         .grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: -1;
@@ -141,9 +137,13 @@
         /* --- WINIETA --- */
         .vignette {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 15;
-            background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.5) 100%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
         }
 
         /* --- LINKI TEKSTOWE --- */
@@ -219,15 +219,15 @@
 
         /* --- RESPONSYWNOŚĆ (MOBILE) --- */
         @media (max-width: 768px) {
-            body { 
-                cursor: default; 
-                position: fixed; /* Sztywna pozycja na mobile */
-            }
+            body { cursor: default; }
             .cursor-dot { display: none; }
 
             .footer {
-                right: auto; width: 100%; text-align: center;
-                bottom: 15px; font-size: 0.7rem;
+                right: auto;
+                width: 100%;
+                text-align: center;
+                bottom: 15px;
+                font-size: 0.7rem;
             }
 
             .bg-text-content {
@@ -235,7 +235,6 @@
                 text-orientation: mixed;
                 position: absolute;
                 left: 50%; top: 50%;
-                /* !important jest kluczowe, żeby JS tego nie nadpisał */
                 transform: translate(-50%, -50%) !important;
                 
                 font-size: 20vh;
@@ -300,15 +299,6 @@
     <div class="footer">&copy;2026 pavv.</div>
 
     <script>
-        // --- WYMUSZENIE POZYCJI 0,0 PRZY STARCIE ---
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-        window.onbeforeunload = function () {
-            window.scrollTo(0, 0);
-        }
-        window.scrollTo(0, 0);
-
         // --- ZMIENNE ---
         const cursorDot = document.getElementById('cursor-dot');
         const blobs = document.getElementById('bg-blobs');
@@ -318,12 +308,12 @@
 
         const isDesktop = window.matchMedia("(min-width: 769px)").matches;
 
-        // --- FUNKCJA RUCHU (WSPÓLNA) ---
+        // --- FUNKCJA RUCHU ---
         function updatePositions(mouseX, mouseY) {
             const width = window.innerWidth;
             const height = window.innerHeight;
             
-            // Pozycja kursora
+            // Kursor
             cursorDot.style.left = `${mouseX}px`;
             cursorDot.style.top = `${mouseY}px`;
 
@@ -346,15 +336,14 @@
 
         // --- LOGIKA DESKTOP ---
         if (isDesktop) {
-            // 1. Inicjalizacja na środku (żeby nie było skoku przy starcie)
+            // Ustawienie początkowe na środku (wizualnie)
+            // Dzięki temu elementy nie "lecą" z rogu 0,0
             updatePositions(window.innerWidth / 2, window.innerHeight / 2);
 
-            // 2. Nasłuchiwanie ruchu
             document.addEventListener('mousemove', (e) => {
                 updatePositions(e.clientX, e.clientY);
             });
 
-            // 3. Hover
             hoverTargets.forEach(link => {
                 link.addEventListener('mouseenter', () => { document.body.classList.add('hovering'); });
                 link.addEventListener('mouseleave', () => { document.body.classList.remove('hovering'); });

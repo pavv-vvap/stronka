@@ -24,7 +24,6 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* position: fixed zapobiega przesuwaniu layoutu na mobile */
             position: fixed; 
             top: 0;
             left: 0;
@@ -38,7 +37,7 @@
         /* --- KURSOR --- */
         .cursor-dot {
             position: fixed;
-            top: 50%; left: 50%;
+            top: 0; left: 0;
             width: 10px; height: 10px;
             background-color: white;
             border-radius: 50%;
@@ -46,12 +45,20 @@
             pointer-events: none;
             transform: translate(-50%, -50%);
             mix-blend-mode: exclusion;
+            
+            /* Domyślnie ukryty, żeby nie skakał przy starcie */
+            opacity: 0; 
+            transition: opacity 0.3s ease;
+        }
+        
+        .cursor-visible {
+            opacity: 1 !important;
         }
         
         body.hovering .cursor-dot {
-            transform: translate(-50%, -50%) scale(1.5);
+            transform: translate(-50%, -50%) scale(1.0);
             background-color: #fff;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, opacity 0.3s ease;
         }
 
         /* --- TŁO (BLOBS) --- */
@@ -111,7 +118,7 @@
             white-space: nowrap;
             will-change: transform;
             text-align: center;
-            transform: translate(0, 0);
+            transform: translate(0, 0); 
             transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
@@ -143,7 +150,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 15;
-            background: radial-gradient(circle, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
+            background: radial-gradient(circle, rgba(0,0,0,0) 35%, rgba(0,0,0,0.8) 100%);
         }
 
         /* --- LINKI TEKSTOWE --- */
@@ -220,7 +227,7 @@
         /* --- RESPONSYWNOŚĆ (MOBILE) --- */
         @media (max-width: 768px) {
             body { cursor: default; }
-            .cursor-dot { display: none; }
+            .cursor-dot { display: none !important; }
 
             .footer {
                 right: auto;
@@ -307,6 +314,7 @@
         const hoverTargets = document.querySelectorAll('.hover-target');
 
         const isDesktop = window.matchMedia("(min-width: 769px)").matches;
+        let isCursorVisible = false;
 
         // --- FUNKCJA RUCHU ---
         function updatePositions(mouseX, mouseY) {
@@ -336,11 +344,11 @@
 
         // --- LOGIKA DESKTOP ---
         if (isDesktop) {
-            // Ustawienie początkowe na środku (wizualnie)
-            // Dzięki temu elementy nie "lecą" z rogu 0,0
-            updatePositions(window.innerWidth / 2, window.innerHeight / 2);
-
             document.addEventListener('mousemove', (e) => {
+                if (!isCursorVisible) {
+                    cursorDot.classList.add('cursor-visible');
+                    isCursorVisible = true;
+                }
                 updatePositions(e.clientX, e.clientY);
             });
 
@@ -350,18 +358,15 @@
             });
         }
 
-        // --- ZABEZPIECZENIA ---
+        // --- ZABEZPIECZENIA (SOFT) ---
+        // Tylko blokada klawiszy, bez agresywnego czyszczenia strony
         document.addEventListener('keydown', function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;
             if(e.ctrlKey && e.keyCode == 85) return false;
+            if(e.ctrlKey && e.keyCode == 83) return false;
         });
 
-        (function() {
-            const devtools = function() {};
-            devtools.toString = function() { debugger; return ''; }
-            setInterval(function() { console.profile(devtools); console.profileEnd(devtools); }, 1000);
-        })();
     </script>
 </body>
 </html>

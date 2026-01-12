@@ -30,11 +30,33 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            cursor: default;
+            
+            /* Kursor niestandardowy na desktopie */
+            cursor: none; 
+            
             user-select: none;
             -webkit-user-select: none;
             -webkit-font-smoothing: antialiased;
             -webkit-tap-highlight-color: transparent; 
+        }
+
+        /* --- KURSOR (KROPKA) --- */
+        .cursor-dot {
+            position: fixed;
+            top: 0; left: 0;
+            width: 10px; height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: exclusion;
+            transition: transform 0.2s ease;
+        }
+
+        body.hovering .cursor-dot {
+            transform: translate(-50%, -50%) scale(2.5);
+            background-color: #fff;
         }
 
         /* --- TŁO (BLOBS) --- */
@@ -73,7 +95,7 @@
             100% { transform: translate(40px, 60px) rotate(5deg) scale(1.05); }
         }
 
-        /* --- TŁO - NAPIS (Kanit) --- */
+        /* --- TŁO - NAPIS --- */
         .bg-text-wrapper {
             position: absolute;
             top: 50%; left: 50%;
@@ -90,7 +112,7 @@
             font-family: 'Kanit', sans-serif;
             font-weight: 900;
             text-transform: uppercase;
-            font-size: 24vw; /* Desktop size */
+            font-size: 24vw; 
             line-height: 1;
             color: transparent;
             -webkit-text-stroke: 2px rgba(255, 255, 255, 0.04);
@@ -100,20 +122,48 @@
             transition: all 0.5s ease;
         }
 
-        /* --- ZIARNO (NOISE) --- */
-        .grain-overlay {
+        /* --- NOWE ZIARNO (Twoja implementacja) --- */
+        .grain {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: -1; 
-            opacity: 0.035;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Ważne: pozwala klikać przez ziarno */
+            z-index: -1; /* Nad tłem, ale pod treścią */
+            /* Usunięto background-color: #66666e, aby widać było bloby */
+        }
+
+        .grain:after {
+            animation: grain 8s steps(10) infinite;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            content: "";
+            height: 300%;
+            width: 300%;
+            left: -100%;
+            top: -110%;
+            opacity: 0.07; /* Zmieniono z 0.8 na 0.07 dla subtelności */
+            position: fixed;
+            will-change: transform;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform:translate(0, 0) }
+            10% { transform:translate(-5%, -10%) }
+            20% { transform:translate(-15%, 5%) }
+            30% { transform:translate(5%, -25%) }
+            40% { transform:translate(-5%, 25%) }
+            50% { transform:translate(-15%, 10%) }
+            60% { transform:translate(15%, 0%) }
+            70% { transform:translate(0%, 15%) }
+            80% { transform:translate(5%, 35%) }
+            90% { transform:translate(-10%, 10%) }
         }
 
         /* --- LINKI TEKSTOWE --- */
         .social-nav {
             position: absolute;
-            top: 60px; /* Domyślnie (Desktop) */
+            top: 60px;
             display: flex;
             gap: 50px;
             z-index: 20;
@@ -132,6 +182,7 @@
             transition: all 0.3s ease;
             position: relative;
             padding: 10px;
+            cursor: none;
         }
 
         .social-text:hover {
@@ -140,7 +191,7 @@
             transform: translateY(-2px);
         }
 
-        /* --- LOGO 3D (WOLUMETRYCZNE) --- */
+        /* --- LOGO 3D --- */
         .logo-container {
             position: relative;
             z-index: 10;
@@ -157,7 +208,6 @@
             font-size: 8rem;
             position: absolute; 
             pointer-events: none;
-            /* Domyślny transition dla desktopu (myszka) */
             transition: transform 0.1s linear; 
         }
 
@@ -168,58 +218,43 @@
         .layer-5 { color: #ffffff; text-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2; }
 
 
-        /* ========================================= */
-        /* === RESPONSYWNOŚĆ (MOBILE FIXES) === */
-        /* ========================================= */
-        
+        /* --- RESPONSYWNOŚĆ (MOBILE) --- */
         @media (max-width: 768px) {
-            
-            /* 1. TŁO NAPIS - POPRAWKA WIDOCZNOŚCI */
+            body { cursor: default; }
+            .cursor-dot { display: none; }
+
             .bg-text-content {
-                /* Zmiana orientacji na pionową (czytane z góry na dół) */
                 writing-mode: vertical-rl;
                 text-orientation: mixed;
-                
-                /* Reset transformacji - writing-mode załatwia obrót */
                 transform: none !important;
-                
-                /* Dopasowanie rozmiaru */
-                font-size: 20vh; /* Rozmiar zależny od wysokości ekranu */
-                line-height: 1;
-                
-                /* ZWIĘKSZONA WIDOCZNOŚĆ */
-                opacity: 0.12; /* Wyraźniejsze */
-                -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1); /* Grubszy obrys */
-                
-                /* Pozycjonowanie absolutne na środku */
+                font-size: 20vh;
+                opacity: 0.12;
+                -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
                 position: absolute;
-                left: 50%;
-                top: 50%;
+                left: 50%; top: 50%;
                 transform: translate(-50%, -50%) !important;
             }
 
-            /* 2. NAWIGACJA - PRZESUNIĘCIE W DÓŁ */
             .social-nav {
-                /* Zamiast pikseli, używamy procentów wysokości ekranu */
                 top: 15%; 
-                gap: 25px; /* Mniejszy odstęp między linkami */
+                gap: 20px;
+                flex-wrap: wrap; 
             }
             
             .social-text {
-                font-size: 0.85rem;
+                font-size: 1.1rem;
                 letter-spacing: 2px;
+                padding: 15px;
+                font-weight: 500; 
             }
 
-            /* 3. LOGO 3D - AUTOMATYCZNA ANIMACJA */
             .logo-layer {
-                font-size: 4rem; /* Mniejszy rozmiar */
-                /* Ważne: usuwamy transition, by animacja CSS działała płynnie */
+                font-size: 6rem;
                 transition: none; 
                 transform: translate(0, 0); 
                 animation: mobile-float-3d 3s infinite ease-in-out alternate;
             }
-
-            /* Definicja opóźnień dla efektu głębi */
+            
             .layer-1 { animation-delay: 0.0s; --offset: 15px; }
             .layer-2 { animation-delay: 0.1s; --offset: 10px; }
             .layer-3 { animation-delay: 0.2s; --offset: 5px; }
@@ -227,7 +262,6 @@
             .layer-5 { animation-delay: 0.4s; --offset: 0px; }
         }
 
-        /* Animacja dla mobile */
         @keyframes mobile-float-3d {
             0% { transform: translateY(0); }
             100% { transform: translateY(var(--offset)); }
@@ -236,6 +270,9 @@
     </style>
 </head>
 <body oncontextmenu="return false;">
+
+    <!-- Tylko Kropka (Kursor) -->
+    <div class="cursor-dot" id="cursor-dot"></div>
 
     <!-- Tło -->
     <div class="background-blobs" id="bg-blobs">
@@ -249,13 +286,14 @@
         <div class="bg-text-content" id="bg-text-content">PAVV</div>
     </div>
 
-    <div class="grain-overlay"></div>
+    <!-- Nowy Skrypt Ziarna -->
+    <div class="grain"></div>
 
     <!-- Linki -->
     <nav class="social-nav">
-        <a href="https://instagram.com" target="_blank" class="social-text">instagram</a>
-        <a href="https://youtube.com" target="_blank" class="social-text">youtube</a>
-        <a href="https://soundcloud.com" target="_blank" class="social-text">soundcloud</a>
+        <a href="https://instagram.com" target="_blank" class="social-text hover-target">instagram</a>
+        <a href="https://youtube.com" target="_blank" class="social-text hover-target">youtube</a>
+        <a href="https://soundcloud.com" target="_blank" class="social-text hover-target">soundcloud</a>
     </nav>
 
     <!-- Wolumetryczne Logo -->
@@ -268,31 +306,49 @@
     </div>
 
     <script>
-        // --- LOGIKA WIZUALNA (DESKTOP) ---
+        // --- LOGIKA WIZUALNA ---
+        const cursorDot = document.getElementById('cursor-dot');
         const blobs = document.getElementById('bg-blobs');
         const bgTextContent = document.getElementById('bg-text-content');
         const layers = document.querySelectorAll('.logo-layer');
+        const hoverTargets = document.querySelectorAll('.hover-target');
 
-        // Sprawdzamy czy to desktop (szerokość > 768px)
         const isDesktop = window.matchMedia("(min-width: 769px)").matches;
 
         if (isDesktop) {
+            
+            // Kursor i Paralaksa
             document.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+
+                // Ruch kropki
+                cursorDot.style.left = `${mouseX}px`;
+                cursorDot.style.top = `${mouseY}px`;
+
+                // Logika 3D
                 const width = window.innerWidth;
                 const height = window.innerHeight;
-                const xVal = (e.clientX / width - 0.5) * 2;
-                const yVal = (e.clientY / height - 0.5) * 2;
+                const xVal = (mouseX / width - 0.5) * 2;
+                const yVal = (mouseY / height - 0.5) * 2;
 
-                // Animacja warstw loga
                 layers.forEach((layer, index) => {
                     const depth = (4 - index) * 15; 
                     layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
                 });
 
-                // Paralaksa tła
                 blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
-                // Paralaksa napisu w tle (tylko desktop)
                 bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
+            });
+
+            // Hover na linkach
+            hoverTargets.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    document.body.classList.add('hovering');
+                });
+                link.addEventListener('mouseleave', () => {
+                    document.body.classList.remove('hovering');
+                });
             });
         }
 

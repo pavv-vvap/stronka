@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&family=Kanit:wght@900&display=swap" rel="stylesheet">
     
-    <!-- Import ikon -->
+    <!-- Import ikon (FontAwesome - standardowe, ładne logotypy) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
         /* RESET I BAZA */
         * {
@@ -39,7 +39,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- TŁO (BLOBS) - ULEPSZONA ANIMACJA --- */
+        /* --- TŁO (BLOBS) --- */
         .background-blobs {
             position: absolute;
             top: 0;
@@ -47,12 +47,9 @@
             width: 100%;
             height: 100%;
             z-index: -4;
-            filter: blur(80px); /* Nieco mniejszy blur dla wyrazistości */
+            filter: blur(80px);
             opacity: 0.6;
-            transition: transform 0.1s ease-out;
             will-change: transform, filter;
-            
-            /* NOWOŚĆ: Powolna zmiana odcieni kolorów całego tła */
             animation: color-cycle 20s infinite alternate linear;
         }
 
@@ -64,16 +61,13 @@
         .blob {
             position: absolute;
             border-radius: 50%;
-            /* NOWOŚĆ: Bardziej złożona animacja ruchu */
             animation: complex-float 15s infinite ease-in-out alternate;
         }
 
-        /* Kolory bazowe */
         .blob-1 { width: 65vw; height: 65vw; background: #4a1c40; top: -20%; left: -20%; animation-delay: 0s; }
         .blob-2 { width: 60vw; height: 60vw; background: #1c2e4a; bottom: -20%; right: -20%; animation-delay: -5s; animation-duration: 18s; }
         .blob-3 { width: 45vw; height: 45vw; background: #1f4236; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-duration: 25s; }
 
-        /* Nowa animacja ruchu blobów (obrót + przesunięcie) */
         @keyframes complex-float {
             0% { transform: translate(0, 0) rotate(0deg) scale(1); }
             33% { transform: translate(30px, -50px) rotate(10deg) scale(1.1); }
@@ -81,7 +75,7 @@
             100% { transform: translate(40px, 60px) rotate(5deg) scale(1.05); }
         }
 
-        /* --- TŁO - NAPIS (FIT TO SCREEN) --- */
+        /* --- TŁO - NAPIS --- */
         .bg-text-wrapper {
             position: absolute;
             top: 50%;
@@ -94,30 +88,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Zabezpieczenie przed overflow */
+            overflow: hidden;
         }
 
         .bg-text-content {
             font-family: 'Kanit', sans-serif;
             font-weight: 900;
             text-transform: uppercase;
-            
-            /* ZMIANA: Używamy 'vw' (viewport width) zamiast vmin.
-               25vw dla 4 liter sprawi, że napis zajmie całą szerokość, ale nie wyjdzie poza nią. */
             font-size: 24vw; 
-            
             line-height: 1;
             color: transparent;
-            /* Cienki obrys */
             -webkit-text-stroke: 2px rgba(255, 255, 255, 0.04);
-            
             white-space: nowrap;
             backface-visibility: hidden;
             transform: translateZ(0);
             will-change: transform;
-            
-            /* Opcjonalnie: max-width zabezpieczający */
-            max-width: 95vw;
             text-align: center;
         }
 
@@ -131,26 +116,54 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* --- NAWIGACJA --- */
+        /* --- NOWE IKONY (GLASS BUTTONS) --- */
         .social-nav {
             position: absolute;
-            top: 50px;
+            top: 60px; /* Nieco niżej dla lepszej kompozycji */
             display: flex;
-            gap: 40px;
+            gap: 25px;
             z-index: 20;
         }
 
-        .social-link {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1.5rem;
+        .social-btn {
+            /* Styl szklanego przycisku */
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            
+            /* Tło półprzezroczyste */
+            background: rgba(255, 255, 255, 0.03);
+            /* Delikatny obrys */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* Blur tła pod przyciskiem */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .social-link:hover {
-            color: #fff;
-            transform: translateY(-3px);
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        .social-btn i {
+            font-size: 1.3rem; /* Rozmiar ikony */
+            color: rgba(255, 255, 255, 0.7); /* Kolor ikony */
+            transition: color 0.3s ease;
+        }
+
+        /* Efekt Hover */
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.15); /* Jaśniejsze tło */
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15); /* Subtelna poświata */
+        }
+
+        .social-btn:hover i {
+            color: #ffffff; /* Biała ikona przy najechaniu */
         }
 
         /* --- EFEKT 3D (WOLUMETRYCZNY) --- */
@@ -182,9 +195,9 @@
 
         @media (max-width: 768px) {
             .logo-layer { font-size: 4rem; }
-            /* Na telefonie zwiększamy nieco, by wypełniło szerokość w pionie */
             .bg-text-content { font-size: 25vw; } 
-            .social-nav { gap: 30px; top: 30px; }
+            .social-nav { gap: 20px; top: 40px; }
+            .social-btn { width: 45px; height: 45px; } /* Mniejsze na mobile */
         }
     </style>
 </head>
@@ -197,18 +210,24 @@
         <div class="blob blob-3"></div>
     </div>
 
-    <!-- Tło Napis (FIT) -->
+    <!-- Tło Napis -->
     <div class="bg-text-wrapper">
         <div class="bg-text-content" id="bg-text-content">PAVV</div>
     </div>
 
     <div class="grain-overlay"></div>
 
-    <!-- Linki -->
+    <!-- NOWE IKONY (Glass Buttons + FontAwesome) -->
     <nav class="social-nav">
-        <a href="https://www.instagram.com/iampavv/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.youtube.com/@pavvek" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
-        <a href="https://soundcloud.com/musicbypavv" target="_blank" class="social-link"><i class="fab fa-soundcloud"></i></a>
+        <a href="https://instagram.com" target="_blank" class="social-btn" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://youtube.com" target="_blank" class="social-btn" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://soundcloud.com" target="_blank" class="social-btn" aria-label="SoundCloud">
+            <i class="fab fa-soundcloud"></i>
+        </a>
     </nav>
 
     <!-- Wolumetryczne Logo -->
@@ -229,45 +248,29 @@
         document.addEventListener('mousemove', (e) => {
             const width = window.innerWidth;
             const height = window.innerHeight;
-            
             const xVal = (e.clientX / width - 0.5) * 2;
             const yVal = (e.clientY / height - 0.5) * 2;
 
-            // 1. Animacja warstw loga
             layers.forEach((layer, index) => {
                 const depth = (4 - index) * 15; 
-                const moveX = xVal * depth;
-                const moveY = yVal * depth;
-                layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
             });
 
-            // 2. Paralaksa Tła (zachowana)
             blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
-            
-            // 3. Paralaksa Napisu w tle - BARDZO SUBTELNA
-            // Zmniejszyłem mnożnik ruchu do 5px, żeby napis nie wyjechał poza ekran przy krawędziach
             bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
         });
 
         // --- SECURITY SCRIPT ---
         document.addEventListener('keydown', function(e) {
-            if(e.keyCode == 123) { e.preventDefault(); return false; }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 73) { e.preventDefault(); return false; }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 74) { e.preventDefault(); return false; }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 67) { e.preventDefault(); return false; }
-            if(e.ctrlKey && e.keyCode == 85) { e.preventDefault(); return false; }
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;
+            if(e.ctrlKey && e.keyCode == 85) return false;
         });
 
         (function() {
             const devtools = function() {};
-            devtools.toString = function() {
-                debugger;
-                return '';
-            }
-            setInterval(function() {
-                console.profile(devtools);
-                console.profileEnd(devtools);
-            }, 1000);
+            devtools.toString = function() { debugger; return ''; }
+            setInterval(function() { console.profile(devtools); console.profileEnd(devtools); }, 1000);
         })();
     </script>
 </body>

@@ -24,7 +24,7 @@
             font-family: 'Josefin Sans', sans-serif;
             height: 100vh;
             width: 100vw;
-            overflow: hidden;
+            overflow: hidden; /* Ważne: blokuje przewijanie */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -34,61 +34,40 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-font-smoothing: antialiased;
+            /* Zapobiega podświetlaniu przy dotyku na mobile */
+            -webkit-tap-highlight-color: transparent; 
         }
 
         /* --- TŁO (BLOBS) --- */
         .background-blobs {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -4;
             filter: blur(80px);
             opacity: 0.6;
             will-change: transform;
+            animation: color-cycle 60s infinite alternate linear;
         }
 
-        /* Definicja animacji kolorów - BARDZO WOLNA (60s) */
-        @keyframes slow-color-morph {
-            0% { background: #4a1c40; }   /* Ciemny Fiolet */
-            25% { background: #1c2e4a; }  /* Granat */
-            50% { background: #1f4236; }  /* Ciemna Zieleń */
-            75% { background: #5e2a2a; }  /* Ciemne Bordo */
-            100% { background: #4a1c40; } /* Pętla do Fioletu */
+        @keyframes color-cycle {
+            0% { background-color: #050505; } /* baza */
+            /* Animujemy filtry wewnątrz blobów, tu tylko kontener */
         }
 
         .blob {
             position: absolute;
             border-radius: 50%;
-            /* Łączymy dwie animacje: ruch (complex-float) i kolor (slow-color-morph) */
-            animation: 
-                complex-float 20s infinite ease-in-out alternate,
-                slow-color-morph 60s infinite linear; 
+            animation: complex-float 20s infinite ease-in-out alternate;
         }
 
-        /* Każdy blob zaczyna w innym momencie cyklu kolorów, żeby nie były identyczne */
-        
-        .blob-1 { 
-            width: 65vw; height: 65vw; 
-            top: -20%; left: -20%; 
-            animation-delay: 0s, 0s; /* Startuje od razu */
-        }
+        /* Dodano osobne animacje zmiany koloru dla każdego bloba */
+        @keyframes blob-color-1 { 0%{background:#4a1c40} 50%{background:#5e2a2a} 100%{background:#4a1c40} }
+        @keyframes blob-color-2 { 0%{background:#1c2e4a} 50%{background:#1f4236} 100%{background:#1c2e4a} }
+        @keyframes blob-color-3 { 0%{background:#1f4236} 50%{background:#1c2e4a} 100%{background:#1f4236} }
 
-        .blob-2 { 
-            width: 60vw; height: 60vw; 
-            bottom: -20%; right: -20%; 
-            /* Opóźnienie ruchu i koloru */
-            animation-delay: -5s, -20s; 
-        }
-
-        .blob-3 { 
-            width: 45vw; height: 45vw; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%);
-            /* Inne opóźnienie */
-            animation-delay: -10s, -40s; 
-        }
+        .blob-1 { width: 65vw; height: 65vw; top: -20%; left: -20%; animation-name: complex-float, blob-color-1; animation-duration: 20s, 60s; }
+        .blob-2 { width: 60vw; height: 60vw; bottom: -20%; right: -20%; animation-name: complex-float, blob-color-2; animation-duration: 18s, 60s; animation-delay: -5s; }
+        .blob-3 { width: 45vw; height: 45vw; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-name: complex-float, blob-color-3; animation-duration: 25s, 60s; animation-delay: -10s; }
 
         @keyframes complex-float {
             0% { transform: translate(0, 0) rotate(0deg) scale(1); }
@@ -100,17 +79,14 @@
         /* --- TŁO - NAPIS --- */
         .bg-text-wrapper {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             z-index: -2;
             pointer-events: none;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
 
         .bg-text-content {
@@ -122,10 +98,9 @@
             color: transparent;
             -webkit-text-stroke: 2px rgba(255, 255, 255, 0.04);
             white-space: nowrap;
-            backface-visibility: hidden;
-            transform: translateZ(0);
             will-change: transform;
             text-align: center;
+            transition: all 0.5s ease;
         }
 
         /* --- ZIARNO (NOISE) --- */
@@ -155,8 +130,9 @@
             text-decoration: none;
             text-transform: lowercase;
             letter-spacing: 3px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
             position: relative;
+            padding: 10px; /* Większe pole dotyku na mobile */
         }
 
         .social-text:hover {
@@ -165,25 +141,7 @@
             transform: translateY(-2px);
         }
 
-        .social-text::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 1px;
-            bottom: -5px;
-            left: 50%;
-            background-color: #fff;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-            opacity: 0;
-        }
-
-        .social-text:hover::after {
-            width: 100%;
-            opacity: 0.7;
-        }
-
-        /* --- EFEKT 3D (WOLUMETRYCZNY) --- */
+        /* --- LOGO 3D (WOLUMETRYCZNE) --- */
         .logo-container {
             position: relative;
             z-index: 10;
@@ -199,9 +157,7 @@
             font-weight: 500;
             font-size: 8rem;
             position: absolute; 
-            transition: transform 0.1s linear; 
             pointer-events: none;
-            user-select: none;
         }
 
         .layer-1 { color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05); filter: blur(4px); }
@@ -210,12 +166,57 @@
         .layer-4 { color: rgba(255, 255, 255, 0.4); }
         .layer-5 { color: #ffffff; text-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2; }
 
+
+        /* ========================================= */
+        /* === RESPONSYWNOŚĆ (MOBILE OPTIMIZATION) === */
+        /* ========================================= */
+        
         @media (max-width: 768px) {
-            .logo-layer { font-size: 4rem; }
-            .bg-text-content { font-size: 25vw; } 
-            .social-nav { gap: 30px; top: 40px; }
-            .social-text { font-size: 0.85rem; letter-spacing: 2px; }
+            
+            /* 1. TŁO NAPIS - Subtelniejszy i pionowy */
+            .bg-text-content {
+                font-size: 150px; /* Stały rozmiar, nie zależy od szerokości */
+                opacity: 0.05; /* Bardzo słabo widoczny */
+                -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+                /* Obrót o 90 stopni - wygląda świetnie na telefonie */
+                transform: rotate(90deg) !important; 
+            }
+
+            /* 2. NAWIGACJA - Zmniejszone odstępy */
+            .social-nav {
+                top: 40px;
+                gap: 20px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .social-text {
+                font-size: 0.8rem;
+                letter-spacing: 2px;
+            }
+
+            /* 3. LOGO 3D - Mniejsze i Automatyczna Animacja */
+            .logo-layer {
+                font-size: 4rem; /* Mniejsze logo */
+                /* Nadpisujemy transform JS - używamy CSS animation */
+                transform: translate(0, 0) !important; 
+                animation: mobile-float-3d 3s infinite ease-in-out alternate;
+            }
+
+            /* Każda warstwa rusza się inaczej, tworząc efekt 3D */
+            .layer-1 { animation-delay: 0.0s; --offset: 15px; }
+            .layer-2 { animation-delay: 0.1s; --offset: 10px; }
+            .layer-3 { animation-delay: 0.2s; --offset: 5px; }
+            .layer-4 { animation-delay: 0.3s; --offset: 2px; }
+            .layer-5 { animation-delay: 0.4s; --offset: 0px; } /* Front stoi w miejscu */
         }
+
+        /* Animacja dla mobile - symulacja 3D (rozsuwanie warstw) */
+        @keyframes mobile-float-3d {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(var(--offset)); }
+        }
+
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -237,40 +238,49 @@
     <!-- Linki -->
     <nav class="social-nav">
         <a href="https://instagram.com/iampavv" target="_blank" class="social-text">instagram</a>
-        <a href="https://www.youtube.com/@pavvek" target="_blank" class="social-text">youtube</a>
+        <a href="https://youtube.com/@pavvek" target="_blank" class="social-text">youtube</a>
         <a href="https://soundcloud.com/musicbypavv" target="_blank" class="social-text">soundcloud</a>
     </nav>
 
     <!-- Wolumetryczne Logo -->
     <div class="logo-container" id="logo-container">
-        <div class="logo-layer layer-1">pavv</div>
-        <div class="logo-layer layer-2">pavv</div>
-        <div class="logo-layer layer-3">pavv</div>
-        <div class="logo-layer layer-4">pavv</div>
-        <div class="logo-layer layer-5">pavv</div>
+        <!-- Dodajemy style inline dla zmiennych CSS na mobile (fallback) -->
+        <div class="logo-layer layer-1" style="--offset: 12px">pavv</div>
+        <div class="logo-layer layer-2" style="--offset: 9px">pavv</div>
+        <div class="logo-layer layer-3" style="--offset: 6px">pavv</div>
+        <div class="logo-layer layer-4" style="--offset: 3px">pavv</div>
+        <div class="logo-layer layer-5" style="--offset: 0px">pavv</div>
     </div>
 
     <script>
-        // --- LOGIKA WIZUALNA ---
+        // --- LOGIKA WIZUALNA (DESKTOP ONLY) ---
         const blobs = document.getElementById('bg-blobs');
         const bgTextContent = document.getElementById('bg-text-content');
         const layers = document.querySelectorAll('.logo-layer');
 
-        document.addEventListener('mousemove', (e) => {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            const xVal = (e.clientX / width - 0.5) * 2;
-            const yVal = (e.clientY / height - 0.5) * 2;
+        // Wykrywamy czy urządzenie ma dotyk/jest małe
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-            layers.forEach((layer, index) => {
-                const depth = (4 - index) * 15; 
-                layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
+        if (!isMobile) {
+            document.addEventListener('mousemove', (e) => {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                const xVal = (e.clientX / width - 0.5) * 2;
+                const yVal = (e.clientY / height - 0.5) * 2;
+
+                // Animacja 3D logo
+                layers.forEach((layer, index) => {
+                    const depth = (4 - index) * 15; 
+                    layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
+                });
+
+                // Paralaksa tła
+                blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
+                
+                // Paralaksa napisu w tle
+                bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
             });
-
-            // Paralaksa tła (niezależna od animacji kolorów)
-            blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
-            bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
-        });
+        }
 
         // --- SECURITY SCRIPT ---
         document.addEventListener('keydown', function(e) {

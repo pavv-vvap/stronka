@@ -5,18 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pavv</title>
     
-    <!-- Importy czcionek -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;500&family=Kanit:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET I BAZA */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: #050505;
@@ -30,17 +25,14 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            
-            /* Kursor niestandardowy na desktopie */
             cursor: none; 
-            
             user-select: none;
             -webkit-user-select: none;
             -webkit-font-smoothing: antialiased;
             -webkit-tap-highlight-color: transparent; 
         }
 
-        /* --- KURSOR (KROPKA) --- */
+        /* --- KURSOR --- */
         .cursor-dot {
             position: fixed;
             top: 0; left: 0;
@@ -51,12 +43,26 @@
             pointer-events: none;
             transform: translate(-50%, -50%);
             mix-blend-mode: exclusion;
-            transition: transform 0.2s ease;
+            transition: transform 0.1s ease-out;
         }
-
+        
         body.hovering .cursor-dot {
             transform: translate(-50%, -50%) scale(2.5);
             background-color: #fff;
+        }
+
+        /* --- STOPKA (NOWOŚĆ) --- */
+        .footer {
+            position: fixed;
+            bottom: 25px;
+            right: 35px;
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300; /* Light */
+            font-size: 0.75rem; /* Mały rozmiar */
+            color: rgba(255, 255, 255, 0.3); /* Bardzo delikatny kolor */
+            z-index: 20;
+            pointer-events: none; /* Nie przeszkadza w klikaniu */
+            letter-spacing: 1px;
         }
 
         /* --- TŁO (BLOBS) --- */
@@ -70,16 +76,14 @@
             animation: color-cycle 60s infinite alternate linear;
         }
 
-        @keyframes color-cycle {
-            0% { background-color: #050505; }
-        }
+        @keyframes color-cycle { 0% { background-color: #050505; } }
 
         .blob {
             position: absolute;
             border-radius: 50%;
             animation: complex-float 20s infinite ease-in-out alternate;
         }
-
+        
         @keyframes blob-color-1 { 0%{background:#4a1c40} 50%{background:#5e2a2a} 100%{background:#4a1c40} }
         @keyframes blob-color-2 { 0%{background:#1c2e4a} 50%{background:#1f4236} 100%{background:#1c2e4a} }
         @keyframes blob-color-3 { 0%{background:#1f4236} 50%{background:#1c2e4a} 100%{background:#1f4236} }
@@ -98,11 +102,10 @@
         /* --- TŁO - NAPIS --- */
         .bg-text-wrapper {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: -2;
             pointer-events: none;
-            width: 100%; height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -119,45 +122,26 @@
             white-space: nowrap;
             will-change: transform;
             text-align: center;
-            transition: all 0.5s ease;
+            transform: translate(0, 0); 
         }
 
-        /* --- NOWE ZIARNO (Twoja implementacja) --- */
+        /* --- ZIARNO --- */
         .grain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Ważne: pozwala klikać przez ziarno */
-            z-index: -1; /* Nad tłem, ale pod treścią */
-            /* Usunięto background-color: #66666e, aby widać było bloby */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1;
         }
-
         .grain:after {
             animation: grain 8s steps(10) infinite;
             background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-            content: "";
-            height: 300%;
-            width: 300%;
-            left: -100%;
-            top: -110%;
-            opacity: 0.07; /* Zmieniono z 0.8 na 0.07 dla subtelności */
-            position: fixed;
-            will-change: transform;
+            content: ""; height: 300%; width: 300%; left: -100%; top: -110%;
+            opacity: 0.07; position: fixed; will-change: transform;
         }
-
         @keyframes grain {
-            0%, 100% { transform:translate(0, 0) }
-            10% { transform:translate(-5%, -10%) }
-            20% { transform:translate(-15%, 5%) }
-            30% { transform:translate(5%, -25%) }
-            40% { transform:translate(-5%, 25%) }
-            50% { transform:translate(-15%, 10%) }
-            60% { transform:translate(15%, 0%) }
-            70% { transform:translate(0%, 15%) }
-            80% { transform:translate(5%, 35%) }
-            90% { transform:translate(-10%, 10%) }
+            0%, 100% { transform:translate(0, 0) } 10% { transform:translate(-5%, -10%) }
+            20% { transform:translate(-15%, 5%) } 30% { transform:translate(5%, -25%) }
+            40% { transform:translate(-5%, 25%) } 50% { transform:translate(-15%, 10%) }
+            60% { transform:translate(15%, 0%) } 70% { transform:translate(0%, 15%) }
+            80% { transform:translate(5%, 35%) } 90% { transform:translate(-10%, 10%) }
         }
 
         /* --- LINKI TEKSTOWE --- */
@@ -223,30 +207,29 @@
             body { cursor: default; }
             .cursor-dot { display: none; }
 
+            /* Stopka na środku na mobile */
+            .footer {
+                right: auto;
+                width: 100%;
+                text-align: center;
+                bottom: 15px;
+                font-size: 0.7rem;
+            }
+
             .bg-text-content {
                 writing-mode: vertical-rl;
                 text-orientation: mixed;
-                transform: none !important;
-                font-size: 20vh;
-                opacity: 0.12;
-                -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
                 position: absolute;
                 left: 50%; top: 50%;
                 transform: translate(-50%, -50%) !important;
+                
+                font-size: 20vh;
+                opacity: 0.12;
+                -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
             }
 
-            .social-nav {
-                top: 15%; 
-                gap: 20px;
-                flex-wrap: wrap; 
-            }
-            
-            .social-text {
-                font-size: 1.1rem;
-                letter-spacing: 2px;
-                padding: 15px;
-                font-weight: 500; 
-            }
+            .social-nav { top: 15%; gap: 20px; flex-wrap: wrap; }
+            .social-text { font-size: 1.1rem; letter-spacing: 2px; padding: 15px; font-weight: 500; }
 
             .logo-layer {
                 font-size: 6rem;
@@ -266,37 +249,30 @@
             0% { transform: translateY(0); }
             100% { transform: translateY(var(--offset)); }
         }
-
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Tylko Kropka (Kursor) -->
     <div class="cursor-dot" id="cursor-dot"></div>
 
-    <!-- Tło -->
     <div class="background-blobs" id="bg-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
 
-    <!-- Tło Napis -->
     <div class="bg-text-wrapper">
         <div class="bg-text-content" id="bg-text-content">PAVV</div>
     </div>
 
-    <!-- Nowy Skrypt Ziarna -->
     <div class="grain"></div>
 
-    <!-- Linki -->
     <nav class="social-nav">
         <a href="https://instagram.com" target="_blank" class="social-text hover-target">instagram</a>
         <a href="https://youtube.com" target="_blank" class="social-text hover-target">youtube</a>
         <a href="https://soundcloud.com" target="_blank" class="social-text hover-target">soundcloud</a>
     </nav>
 
-    <!-- Wolumetryczne Logo -->
     <div class="logo-container" id="logo-container">
         <div class="logo-layer layer-1" style="--offset: 12px">pavv</div>
         <div class="logo-layer layer-2" style="--offset: 9px">pavv</div>
@@ -305,8 +281,10 @@
         <div class="logo-layer layer-5" style="--offset: 0px">pavv</div>
     </div>
 
+    <!-- Stopka -->
+    <div class="footer">&copy;2026 pavv.</div>
+
     <script>
-        // --- LOGIKA WIZUALNA ---
         const cursorDot = document.getElementById('cursor-dot');
         const blobs = document.getElementById('bg-blobs');
         const bgTextContent = document.getElementById('bg-text-content');
@@ -316,19 +294,20 @@
         const isDesktop = window.matchMedia("(min-width: 769px)").matches;
 
         if (isDesktop) {
-            
-            // Kursor i Paralaksa
+            // Centrowanie startowe kropki
+            cursorDot.style.left = '50%';
+            cursorDot.style.top = '50%';
+
             document.addEventListener('mousemove', (e) => {
                 const mouseX = e.clientX;
                 const mouseY = e.clientY;
 
-                // Ruch kropki
                 cursorDot.style.left = `${mouseX}px`;
                 cursorDot.style.top = `${mouseY}px`;
 
-                // Logika 3D
                 const width = window.innerWidth;
                 const height = window.innerHeight;
+                
                 const xVal = (mouseX / width - 0.5) * 2;
                 const yVal = (mouseY / height - 0.5) * 2;
 
@@ -341,18 +320,12 @@
                 bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
             });
 
-            // Hover na linkach
             hoverTargets.forEach(link => {
-                link.addEventListener('mouseenter', () => {
-                    document.body.classList.add('hovering');
-                });
-                link.addEventListener('mouseleave', () => {
-                    document.body.classList.remove('hovering');
-                });
+                link.addEventListener('mouseenter', () => { document.body.classList.add('hovering'); });
+                link.addEventListener('mouseleave', () => { document.body.classList.remove('hovering'); });
             });
         }
 
-        // --- ZABEZPIECZENIA ---
         document.addEventListener('keydown', function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;

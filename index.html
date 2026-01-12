@@ -10,21 +10,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;500&family=Kanit:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* RESET I BAZA - SZTYWNE USTAWIENIA */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Krytyczne dla braku pasków przewijania */
+            background-color: #050505;
+        }
 
         body {
-            background-color: #050505;
             color: #ffffff;
             font-family: 'Josefin Sans', sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
+            position: fixed; /* Zmiana na fixed zapobiega przesuwaniu */
+            top: 0;
+            left: 0;
             cursor: none; 
             user-select: none;
             -webkit-user-select: none;
@@ -35,7 +40,7 @@
         /* --- KURSOR --- */
         .cursor-dot {
             position: fixed;
-            top: 0; left: 0;
+            top: 50%; left: 50%;
             width: 10px; height: 10px;
             background-color: white;
             border-radius: 50%;
@@ -43,26 +48,12 @@
             pointer-events: none;
             transform: translate(-50%, -50%);
             mix-blend-mode: exclusion;
-            transition: transform 0.1s ease-out;
         }
         
         body.hovering .cursor-dot {
             transform: translate(-50%, -50%) scale(2.5);
             background-color: #fff;
-        }
-
-        /* --- STOPKA (NOWOŚĆ) --- */
-        .footer {
-            position: fixed;
-            bottom: 25px;
-            right: 35px;
-            font-family: 'Josefin Sans', sans-serif;
-            font-weight: 300; /* Light */
-            font-size: 0.75rem; /* Mały rozmiar */
-            color: rgba(255, 255, 255, 0.3); /* Bardzo delikatny kolor */
-            z-index: 20;
-            pointer-events: none; /* Nie przeszkadza w klikaniu */
-            letter-spacing: 1px;
+            transition: transform 0.2s ease;
         }
 
         /* --- TŁO (BLOBS) --- */
@@ -74,6 +65,8 @@
             opacity: 0.6;
             will-change: transform;
             animation: color-cycle 60s infinite alternate linear;
+            /* Płynny powrót do pozycji */
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         @keyframes color-cycle { 0% { background-color: #050505; } }
@@ -102,8 +95,7 @@
         /* --- TŁO - NAPIS --- */
         .bg-text-wrapper {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            inset: 0;
             z-index: -2;
             pointer-events: none;
             display: flex;
@@ -122,10 +114,12 @@
             white-space: nowrap;
             will-change: transform;
             text-align: center;
-            transform: translate(0, 0); 
+            /* Startujemy idealnie na środku */
+            transform: translate(0, 0);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* --- ZIARNO --- */
+        /* --- ZIARNO (Mocniejsze) --- */
         .grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: -1;
@@ -134,7 +128,7 @@
             animation: grain 8s steps(10) infinite;
             background-image: url('https://grainy-gradients.vercel.app/noise.svg');
             content: ""; height: 300%; width: 300%; left: -100%; top: -110%;
-            opacity: 0.07; position: fixed; will-change: transform;
+            opacity: 0.15; position: fixed; will-change: transform;
         }
         @keyframes grain {
             0%, 100% { transform:translate(0, 0) } 10% { transform:translate(-5%, -10%) }
@@ -142,6 +136,14 @@
             40% { transform:translate(-5%, 25%) } 50% { transform:translate(-15%, 10%) }
             60% { transform:translate(15%, 0%) } 70% { transform:translate(0%, 15%) }
             80% { transform:translate(5%, 35%) } 90% { transform:translate(-10%, 10%) }
+        }
+
+        /* --- WINIETA --- */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 15;
+            background: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.5) 100%);
         }
 
         /* --- LINKI TEKSTOWE --- */
@@ -178,7 +180,7 @@
         /* --- LOGO 3D --- */
         .logo-container {
             position: relative;
-            z-index: 10;
+            z-index: 20;
             width: 100vw;
             height: 300px; 
             display: flex;
@@ -192,7 +194,7 @@
             font-size: 8rem;
             position: absolute; 
             pointer-events: none;
-            transition: transform 0.1s linear; 
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .layer-1 { color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05); filter: blur(4px); }
@@ -201,19 +203,31 @@
         .layer-4 { color: rgba(255, 255, 255, 0.4); }
         .layer-5 { color: #ffffff; text-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2; }
 
+        /* STOPKA */
+        .footer {
+            position: fixed;
+            bottom: 25px;
+            right: 35px;
+            font-family: 'Josefin Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            z-index: 20;
+            pointer-events: none;
+            letter-spacing: 1px;
+        }
 
         /* --- RESPONSYWNOŚĆ (MOBILE) --- */
         @media (max-width: 768px) {
-            body { cursor: default; }
+            body { 
+                cursor: default; 
+                position: fixed; /* Sztywna pozycja na mobile */
+            }
             .cursor-dot { display: none; }
 
-            /* Stopka na środku na mobile */
             .footer {
-                right: auto;
-                width: 100%;
-                text-align: center;
-                bottom: 15px;
-                font-size: 0.7rem;
+                right: auto; width: 100%; text-align: center;
+                bottom: 15px; font-size: 0.7rem;
             }
 
             .bg-text-content {
@@ -221,6 +235,7 @@
                 text-orientation: mixed;
                 position: absolute;
                 left: 50%; top: 50%;
+                /* !important jest kluczowe, żeby JS tego nie nadpisał */
                 transform: translate(-50%, -50%) !important;
                 
                 font-size: 20vh;
@@ -266,25 +281,35 @@
     </div>
 
     <div class="grain"></div>
+    <div class="vignette"></div>
 
     <nav class="social-nav">
-        <a href="https://instagram.com" target="_blank" class="social-text hover-target">instagram</a>
-        <a href="https://youtube.com" target="_blank" class="social-text hover-target">youtube</a>
-        <a href="https://soundcloud.com" target="_blank" class="social-text hover-target">soundcloud</a>
+        <a href="https://instagram.com/iampavv" target="_blank" class="social-text hover-target">instagram</a>
+        <a href="https://youtube.com/@pavvek" target="_blank" class="social-text hover-target">youtube</a>
+        <a href="https://soundcloud.com/musicbypavv" target="_blank" class="social-text hover-target">soundcloud</a>
     </nav>
 
     <div class="logo-container" id="logo-container">
-        <div class="logo-layer layer-1" style="--offset: 12px">pavv</div>
-        <div class="logo-layer layer-2" style="--offset: 9px">pavv</div>
-        <div class="logo-layer layer-3" style="--offset: 6px">pavv</div>
-        <div class="logo-layer layer-4" style="--offset: 3px">pavv</div>
-        <div class="logo-layer layer-5" style="--offset: 0px">pavv</div>
+        <div class="logo-layer layer-1">pavv</div>
+        <div class="logo-layer layer-2">pavv</div>
+        <div class="logo-layer layer-3">pavv</div>
+        <div class="logo-layer layer-4">pavv</div>
+        <div class="logo-layer layer-5">pavv</div>
     </div>
 
-    <!-- Stopka -->
     <div class="footer">&copy;2026 pavv.</div>
 
     <script>
+        // --- WYMUSZENIE POZYCJI 0,0 PRZY STARCIE ---
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0);
+        }
+        window.scrollTo(0, 0);
+
+        // --- ZMIENNE ---
         const cursorDot = document.getElementById('cursor-dot');
         const blobs = document.getElementById('bg-blobs');
         const bgTextContent = document.getElementById('bg-text-content');
@@ -293,39 +318,50 @@
 
         const isDesktop = window.matchMedia("(min-width: 769px)").matches;
 
-        if (isDesktop) {
-            // Centrowanie startowe kropki
-            cursorDot.style.left = '50%';
-            cursorDot.style.top = '50%';
+        // --- FUNKCJA RUCHU (WSPÓLNA) ---
+        function updatePositions(mouseX, mouseY) {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            // Pozycja kursora
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
 
-            document.addEventListener('mousemove', (e) => {
-                const mouseX = e.clientX;
-                const mouseY = e.clientY;
+            // Obliczenia
+            const xVal = (mouseX / width - 0.5) * 2;
+            const yVal = (mouseY / height - 0.5) * 2;
 
-                cursorDot.style.left = `${mouseX}px`;
-                cursorDot.style.top = `${mouseY}px`;
-
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                
-                const xVal = (mouseX / width - 0.5) * 2;
-                const yVal = (mouseY / height - 0.5) * 2;
-
-                layers.forEach((layer, index) => {
-                    const depth = (4 - index) * 15; 
-                    layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
-                });
-
-                blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
-                bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
+            // 1. Logo 3D
+            layers.forEach((layer, index) => {
+                const depth = (4 - index) * 15; 
+                layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
             });
 
+            // 2. Tło
+            blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
+            
+            // 3. Napis w tle
+            bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
+        }
+
+        // --- LOGIKA DESKTOP ---
+        if (isDesktop) {
+            // 1. Inicjalizacja na środku (żeby nie było skoku przy starcie)
+            updatePositions(window.innerWidth / 2, window.innerHeight / 2);
+
+            // 2. Nasłuchiwanie ruchu
+            document.addEventListener('mousemove', (e) => {
+                updatePositions(e.clientX, e.clientY);
+            });
+
+            // 3. Hover
             hoverTargets.forEach(link => {
                 link.addEventListener('mouseenter', () => { document.body.classList.add('hovering'); });
                 link.addEventListener('mouseleave', () => { document.body.classList.remove('hovering'); });
             });
         }
 
+        // --- ZABEZPIECZENIA ---
         document.addEventListener('keydown', function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false;

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pavv</title>
     
+    <!-- FAVICON (Litera P jako SVG) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 font-weight=%22bold%22 font-family=%22sans-serif%22 fill=%22white%22>P</text></svg>">
+
     <!-- Importy Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +15,9 @@
     
     <!-- Import Monument Extended -->
     <link href="https://fonts.cdnfonts.com/css/monument-extended" rel="stylesheet">
+    
+    <!-- Opcjonalnie: Import FontAwesome (jeśli chciałbyś używać ikon w treści strony) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* RESET */
@@ -204,8 +210,8 @@
         /* Stylizacja dla elementu Discord */
         .discord-item {
             position: relative;
-            /* Na potrzeby mobile dodajemy pointer */
             cursor: pointer; 
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Tooltip z nazwą */
@@ -232,6 +238,7 @@
             
             backdrop-filter: blur(4px); /* Efekt szkła */
             transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 25;
         }
 
         /* Pokazywanie tooltipa - Hover (PC) LUB klasa Active (Mobile) */
@@ -308,12 +315,39 @@
                 -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
             }
 
-            /* Nawigacja wyżej dla mobile */
-            .social-nav { top: 11%; gap: 20px; flex-wrap: wrap; }
+            /* --- ZMIANY W UKŁADZIE NAV DLA MOBILE --- */
+            .social-nav { 
+                top: 15%; 
+                width: 80%;
+                display: grid;
+                grid-template-columns: 1fr 1fr; 
+                gap: 20px;
+                justify-items: center;
+                flex-wrap: nowrap; 
+            }
             
-            .social-text { font-size: 1.1rem; letter-spacing: 2px; padding: 15px; font-weight: 500; }
+            .social-text { 
+                font-size: 1.0rem; 
+                letter-spacing: 2px; 
+                padding: 10px; 
+                font-weight: 500; 
+                width: 100%;
+                text-align: center;
+            }
 
-            .discord-tooltip { top: 120%; }
+            .discord-item {
+                grid-column: span 2; 
+                justify-self: center;
+            }
+
+            /* Większy dymek na mobile */
+            .discord-tooltip {
+                top: 130%; 
+                padding: 10px 20px; 
+                font-size: 1.0rem; 
+                background: rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
 
             .logo-layer {
                 font-size: 5.0rem; 
@@ -357,8 +391,8 @@
         <a href="https://youtube.com/@pavvek" target="_blank" class="social-text hover-target">youtube</a>
         <a href="https://soundcloud.com/musicbypavv" target="_blank" class="social-text hover-target">soundcloud</a>
         <a href="https://open.spotify.com/artist/35RUjtJ4O7hYBEPmj7SuaS?si=pJa7SDOdROq0_0v9UHFlPw" target="_blank" class="social-text hover-target">spotify</a>
-        <!-- Onclick obsługiwany przez JS zależnie od urządzenia -->
-        <span class="social-text hover-target discord-item" onclick="toggleDiscord(this)">
+        
+        <span class="social-text hover-target discord-item" onclick="toggleDiscord(event, this)">
             discord
             <span class="discord-tooltip">pavv_</span>
         </span>
@@ -390,42 +424,44 @@
             const width = window.innerWidth;
             const height = window.innerHeight;
             
-            // Kursor
             cursorDot.style.left = `${mouseX}px`;
             cursorDot.style.top = `${mouseY}px`;
 
-            // Obliczenia
             const xVal = (mouseX / width - 0.5) * 2;
             const yVal = (mouseY / height - 0.5) * 2;
 
-            // 1. Logo 3D
             layers.forEach((layer, index) => {
                 const depth = (4 - index) * 15; 
                 layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
             });
 
-            // 2. Tło
             blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
-            
-            // 3. Napis w tle
             bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
         }
 
         // --- FUNKCJA TOGGLE DISCORD ---
-        function toggleDiscord(element) {
-            // Logika tylko dla urządzeń mobilnych (ekran <= 768px)
-            // Na PC obsługa jest w CSS przez :hover
+        function toggleDiscord(event, element) {
             if (window.innerWidth <= 768) {
-                element.classList.toggle('active');
-                
-                // Automatycznie ukryj po 3 sekundach
-                if (element.classList.contains('active')) {
-                    setTimeout(() => {
-                        element.classList.remove('active');
-                    }, 3000);
+                event.stopPropagation();
+                const isActive = element.classList.contains('active');
+                document.querySelectorAll('.discord-item').forEach(el => el.classList.remove('active'));
+                if (!isActive) {
+                    element.classList.add('active');
                 }
             }
         }
+
+        // --- GLOBALNE ZAMYKANIE DISCORDA NA MOBILE ---
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth <= 768) {
+                const discordItems = document.querySelectorAll('.discord-item');
+                discordItems.forEach(item => {
+                    if (!item.contains(event.target)) {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+        });
 
         // --- LOGIKA DESKTOP ---
         if (isDesktop) {

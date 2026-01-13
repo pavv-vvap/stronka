@@ -311,7 +311,7 @@
                 -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
             }
 
-            /* Nawigacja wyżej dla mobile (zmieniono z 11% na 7%) */
+            /* Nawigacja wyżej dla mobile (ok. 7%) */
             .social-nav { top: 7%; gap: 20px; flex-wrap: wrap; }
             
             .social-text { font-size: 1.1rem; letter-spacing: 2px; padding: 15px; font-weight: 500; }
@@ -414,16 +414,26 @@
             bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
         }
 
-        // --- FUNKCJA TOGGLE DISCORD ---
+        // --- FUNKCJA TOGGLE DISCORD (Kliknięcie w przycisk) ---
         function toggleDiscord(element) {
-            // Logika tylko dla urządzeń mobilnych (ekran <= 768px)
-            // Na PC obsługa jest w CSS przez :hover
             if (window.innerWidth <= 768) {
                 element.classList.toggle('active');
-                
-                // Usunięto setTimeout - tooltip nie znika samoczynnie
+                // Jeśli klikniemy bezpośrednio w przycisk, event wyląduje też na 'document',
+                // dlatego poniższy listener na 'click' obsługuje zamykanie.
             }
         }
+
+        // --- ZAMYKANIE PO KLIKNIĘCIU W TŁO (Mobile) ---
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                const discordItem = document.querySelector('.discord-item');
+                // Jeśli kliknięty element NIE jest przyciskiem discorda (ani jego dzieckiem)
+                // i przycisk discorda w ogóle istnieje
+                if (discordItem && !discordItem.contains(e.target)) {
+                    discordItem.classList.remove('active');
+                }
+            }
+        });
 
         // --- LOGIKA DESKTOP ---
         if (isDesktop) {

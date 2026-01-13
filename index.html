@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pavv</title>
     
-    <!-- FAVICON (Wycentrowane P) -->
-    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="80" font-weight="bold" font-family="sans-serif" fill="white">P</text></svg>'>
+    <!-- FAVICON (Wygenerowane SVG "P") -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 font-family=%22Josefin Sans, sans-serif%22 font-weight=%22300%22 fill=%22white%22>P</text></svg>">
 
     <!-- Importy Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;500&display=swap" rel="stylesheet">
     
     <!-- Import Monument Extended -->
     <link href="https://fonts.cdnfonts.com/css/monument-extended" rel="stylesheet">
@@ -112,6 +112,7 @@
             align-items: center;
         }
 
+        /* Animacja tła */
         @keyframes bg-pulse {
             0% { filter: blur(7px); opacity: 0.0; letter-spacing: 0px; }
             50% { filter: blur(0px); opacity: 0.6; letter-spacing: 15px; }
@@ -141,7 +142,7 @@
             animation: bg-pulse 6s infinite ease-in-out;
         }
 
-        /* --- ZIARNO I WINIETA --- */
+        /* --- ZIARNO --- */
         .grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: -1;
@@ -160,6 +161,7 @@
             80% { transform:translate(5%, 35%) } 90% { transform:translate(-10%, 10%) }
         }
 
+        /* --- WINIETA --- */
         .vignette {
             position: fixed;
             top: 0;
@@ -205,19 +207,19 @@
         /* Stylizacja dla elementu Discord */
         .discord-item {
             position: relative;
+            /* Na potrzeby mobile dodajemy pointer */
             cursor: pointer; 
-            -webkit-tap-highlight-color: transparent;
         }
 
         /* Tooltip z nazwą */
         .discord-tooltip {
             position: absolute;
-            top: 100%; 
+            top: 100%; /* Pod napisem */
             left: 50%;
-            transform: translate(-50%, 10px); 
+            transform: translate(-50%, 10px); /* Odsunięty w dół */
             
-            background: rgba(255, 255, 255, 0.1); 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
+            background: rgba(255, 255, 255, 0.1); /* Półprzezroczyste tło */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Delikatna ramka */
             padding: 5px 12px;
             border-radius: 4px;
             
@@ -231,19 +233,19 @@
             visibility: hidden;
             pointer-events: none;
             
-            backdrop-filter: blur(4px); 
+            backdrop-filter: blur(4px); /* Efekt szkła */
             transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 25;
         }
 
+        /* Pokazywanie tooltipa - Hover (PC) LUB klasa Active (Mobile) */
         .discord-item:hover .discord-tooltip,
         .discord-item.active .discord-tooltip {
             opacity: 1;
             visibility: visible;
-            transform: translate(-50%, 0px); 
+            transform: translate(-50%, 0px); /* Wjazd do góry */
         }
 
-        /* --- LOGO 3D --- */
+        /* --- LOGO 3D (MONUMENT EXTENDED) --- */
         .logo-container {
             position: relative;
             z-index: 20;
@@ -271,6 +273,7 @@
         .layer-4 { color: rgba(255, 255, 255, 0.4); }
         .layer-5 { color: #ffffff; text-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2; }
 
+        /* STOPKA */
         .footer {
             position: fixed;
             bottom: 25px;
@@ -308,38 +311,12 @@
                 -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
             }
 
-            /* --- POPRAWA LINKÓW NA MOBILE --- */
-            .social-nav { 
-                top: 15%; 
-                width: 90%;
-                display: flex; /* Zamiast Grid */
-                flex-wrap: wrap; /* Zawijanie */
-                justify-content: center;
-                gap: 15px 25px; /* Odstępy: góra/dół 15, lewo/prawo 25 */
-            }
+            /* Nawigacja wyżej dla mobile (zmieniono z 11% na 7%) */
+            .social-nav { top: 7%; gap: 20px; flex-wrap: wrap; }
             
-            .social-text { 
-                font-size: 1.1rem; /* Większe litery */
-                font-weight: 400; /* Wyraźniejsze */
-                letter-spacing: 2px; 
-                padding: 8px 12px;
-                
-                /* Delikatne tło dla lepszej czytelności linków na telefonie */
-                background: rgba(0, 0, 0, 0.2);
-                border-radius: 20px;
-                backdrop-filter: blur(2px);
-            }
+            .social-text { font-size: 1.1rem; letter-spacing: 2px; padding: 15px; font-weight: 500; }
 
-            /* Discord tooltip - ulepszenie dla mobile */
-            .discord-tooltip {
-                top: 130%; 
-                font-size: 1.0rem; 
-                font-weight: 500;
-                padding: 10px 25px; 
-                background: rgba(20, 20, 20, 0.9); /* Ciemniejsze tło */
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            }
+            .discord-tooltip { top: 120%; }
 
             .logo-layer {
                 font-size: 5.0rem; 
@@ -383,8 +360,8 @@
         <a href="https://youtube.com/@pavvek" target="_blank" class="social-text hover-target">youtube</a>
         <a href="https://soundcloud.com/musicbypavv" target="_blank" class="social-text hover-target">soundcloud</a>
         <a href="https://open.spotify.com/artist/35RUjtJ4O7hYBEPmj7SuaS?si=pJa7SDOdROq0_0v9UHFlPw" target="_blank" class="social-text hover-target">spotify</a>
-        
-        <span class="social-text hover-target discord-item" onclick="toggleDiscord(event, this)">
+        <!-- Onclick obsługiwany przez JS zależnie od urządzenia -->
+        <span class="social-text hover-target discord-item" onclick="toggleDiscord(this)">
             discord
             <span class="discord-tooltip">pavv_</span>
         </span>
@@ -416,44 +393,37 @@
             const width = window.innerWidth;
             const height = window.innerHeight;
             
+            // Kursor
             cursorDot.style.left = `${mouseX}px`;
             cursorDot.style.top = `${mouseY}px`;
 
+            // Obliczenia
             const xVal = (mouseX / width - 0.5) * 2;
             const yVal = (mouseY / height - 0.5) * 2;
 
+            // 1. Logo 3D
             layers.forEach((layer, index) => {
                 const depth = (4 - index) * 15; 
                 layer.style.transform = `translate(${xVal * depth}px, ${yVal * depth}px)`;
             });
 
+            // 2. Tło
             blobs.style.transform = `translate3d(${-xVal * 20}px, ${-yVal * 20}px, 0)`;
+            
+            // 3. Napis w tle
             bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
         }
 
         // --- FUNKCJA TOGGLE DISCORD ---
-        function toggleDiscord(event, element) {
+        function toggleDiscord(element) {
+            // Logika tylko dla urządzeń mobilnych (ekran <= 768px)
+            // Na PC obsługa jest w CSS przez :hover
             if (window.innerWidth <= 768) {
-                event.stopPropagation();
-                const isActive = element.classList.contains('active');
-                document.querySelectorAll('.discord-item').forEach(el => el.classList.remove('active'));
-                if (!isActive) {
-                    element.classList.add('active');
-                }
+                element.classList.toggle('active');
+                
+                // Usunięto setTimeout - tooltip nie znika samoczynnie
             }
         }
-
-        // --- GLOBALNE ZAMYKANIE DISCORDA NA MOBILE ---
-        document.addEventListener('click', function(event) {
-            if (window.innerWidth <= 768) {
-                const discordItems = document.querySelectorAll('.discord-item');
-                discordItems.forEach(item => {
-                    if (!item.contains(event.target)) {
-                        item.classList.remove('active');
-                    }
-                });
-            }
-        });
 
         // --- LOGIKA DESKTOP ---
         if (isDesktop) {

@@ -58,7 +58,7 @@
         }
         
         body.hovering .cursor-dot {
-            transform: translate(-50%, -50%) scale(1.2);
+            transform: translate(-50%, -50%) scale(1.0);
             background-color: #fff;
             transition: transform 0.2s ease, opacity 0.3s ease;
         }
@@ -112,7 +112,7 @@
         /* Animacja tła */
         @keyframes bg-pulse {
             0% { filter: blur(7px); opacity: 0.0; letter-spacing: 0px; }
-            50% { filter: blur(0px); opacity: 0.6; letter-spacing: 10px; }
+            50% { filter: blur(0px); opacity: 0.6; letter-spacing: 15px; }
             100% { filter: blur(7px); opacity: 0.0; letter-spacing: 0px; }
         }
 
@@ -204,7 +204,8 @@
         /* Stylizacja dla elementu Discord */
         .discord-item {
             position: relative;
-            /* Usunięto cursor: help, dziedziczy cursor: none z .social-text */
+            /* Na potrzeby mobile dodajemy pointer */
+            cursor: pointer; 
         }
 
         /* Tooltip z nazwą */
@@ -233,8 +234,9 @@
             transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* Pokazywanie tooltipa */
-        .discord-item:hover .discord-tooltip {
+        /* Pokazywanie tooltipa - Hover (PC) LUB klasa Active (Mobile) */
+        .discord-item:hover .discord-tooltip,
+        .discord-item.active .discord-tooltip {
             opacity: 1;
             visibility: visible;
             transform: translate(-50%, 0px); /* Wjazd do góry */
@@ -306,7 +308,9 @@
                 -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
             }
 
-            .social-nav { top: 15%; gap: 20px; flex-wrap: wrap; }
+            /* Nawigacja wyżej dla mobile */
+            .social-nav { top: 11%; gap: 20px; flex-wrap: wrap; }
+            
             .social-text { font-size: 1.1rem; letter-spacing: 2px; padding: 15px; font-weight: 500; }
 
             .discord-tooltip { top: 120%; }
@@ -352,7 +356,9 @@
         <a href="https://instagram.com/iampavv" target="_blank" class="social-text hover-target">instagram</a>
         <a href="https://youtube.com/@pavvek" target="_blank" class="social-text hover-target">youtube</a>
         <a href="https://soundcloud.com/musicbypavv" target="_blank" class="social-text hover-target">soundcloud</a>
-        <span class="social-text hover-target discord-item">
+        <a href="https://open.spotify.com/artist/35RUjtJ4O7hYBEPmj7SuaS?si=pJa7SDOdROq0_0v9UHFlPw" target="_blank" class="social-text hover-target">spotify</a>
+        <!-- Onclick obsługiwany przez JS zależnie od urządzenia -->
+        <span class="social-text hover-target discord-item" onclick="toggleDiscord(this)">
             discord
             <span class="discord-tooltip">pavv_</span>
         </span>
@@ -403,6 +409,22 @@
             
             // 3. Napis w tle
             bgTextContent.style.transform = `translate3d(${xVal * 5}px, ${yVal * 5}px, 0)`;
+        }
+
+        // --- FUNKCJA TOGGLE DISCORD ---
+        function toggleDiscord(element) {
+            // Logika tylko dla urządzeń mobilnych (ekran <= 768px)
+            // Na PC obsługa jest w CSS przez :hover
+            if (window.innerWidth <= 768) {
+                element.classList.toggle('active');
+                
+                // Automatycznie ukryj po 3 sekundach
+                if (element.classList.contains('active')) {
+                    setTimeout(() => {
+                        element.classList.remove('active');
+                    }, 3000);
+                }
+            }
         }
 
         // --- LOGIKA DESKTOP ---

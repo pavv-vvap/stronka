@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pavv</title>
     
-    <!-- FAVICON (Litera P jako SVG) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 font-weight=%22bold%22 font-family=%22sans-serif%22 fill=%22white%22>P</text></svg>">
+    <!-- FAVICON (Wycentrowane P) -->
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="80" font-weight="bold" font-family="sans-serif" fill="white">P</text></svg>'>
 
     <!-- Importy Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     
     <!-- Import Monument Extended -->
     <link href="https://fonts.cdnfonts.com/css/monument-extended" rel="stylesheet">
-    
-    <!-- Opcjonalnie: Import FontAwesome (jeśli chciałbyś używać ikon w treści strony) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* RESET */
@@ -115,7 +112,6 @@
             align-items: center;
         }
 
-        /* Animacja tła */
         @keyframes bg-pulse {
             0% { filter: blur(7px); opacity: 0.0; letter-spacing: 0px; }
             50% { filter: blur(0px); opacity: 0.6; letter-spacing: 15px; }
@@ -145,7 +141,7 @@
             animation: bg-pulse 6s infinite ease-in-out;
         }
 
-        /* --- ZIARNO --- */
+        /* --- ZIARNO I WINIETA --- */
         .grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: -1;
@@ -164,7 +160,6 @@
             80% { transform:translate(5%, 35%) } 90% { transform:translate(-10%, 10%) }
         }
 
-        /* --- WINIETA --- */
         .vignette {
             position: fixed;
             top: 0;
@@ -217,12 +212,12 @@
         /* Tooltip z nazwą */
         .discord-tooltip {
             position: absolute;
-            top: 100%; /* Pod napisem */
+            top: 100%; 
             left: 50%;
-            transform: translate(-50%, 10px); /* Odsunięty w dół */
+            transform: translate(-50%, 10px); 
             
-            background: rgba(255, 255, 255, 0.1); /* Półprzezroczyste tło */
-            border: 1px solid rgba(255, 255, 255, 0.2); /* Delikatna ramka */
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
             padding: 5px 12px;
             border-radius: 4px;
             
@@ -236,20 +231,19 @@
             visibility: hidden;
             pointer-events: none;
             
-            backdrop-filter: blur(4px); /* Efekt szkła */
+            backdrop-filter: blur(4px); 
             transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             z-index: 25;
         }
 
-        /* Pokazywanie tooltipa - Hover (PC) LUB klasa Active (Mobile) */
         .discord-item:hover .discord-tooltip,
         .discord-item.active .discord-tooltip {
             opacity: 1;
             visibility: visible;
-            transform: translate(-50%, 0px); /* Wjazd do góry */
+            transform: translate(-50%, 0px); 
         }
 
-        /* --- LOGO 3D (MONUMENT EXTENDED) --- */
+        /* --- LOGO 3D --- */
         .logo-container {
             position: relative;
             z-index: 20;
@@ -277,7 +271,6 @@
         .layer-4 { color: rgba(255, 255, 255, 0.4); }
         .layer-5 { color: #ffffff; text-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 2; }
 
-        /* STOPKA */
         .footer {
             position: fixed;
             bottom: 25px;
@@ -315,38 +308,37 @@
                 -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
             }
 
-            /* --- ZMIANY W UKŁADZIE NAV DLA MOBILE --- */
+            /* --- POPRAWA LINKÓW NA MOBILE --- */
             .social-nav { 
                 top: 15%; 
-                width: 80%;
-                display: grid;
-                grid-template-columns: 1fr 1fr; 
-                gap: 20px;
-                justify-items: center;
-                flex-wrap: nowrap; 
+                width: 90%;
+                display: flex; /* Zamiast Grid */
+                flex-wrap: wrap; /* Zawijanie */
+                justify-content: center;
+                gap: 15px 25px; /* Odstępy: góra/dół 15, lewo/prawo 25 */
             }
             
             .social-text { 
-                font-size: 1.0rem; 
+                font-size: 1.1rem; /* Większe litery */
+                font-weight: 400; /* Wyraźniejsze */
                 letter-spacing: 2px; 
-                padding: 10px; 
-                font-weight: 500; 
-                width: 100%;
-                text-align: center;
+                padding: 8px 12px;
+                
+                /* Delikatne tło dla lepszej czytelności linków na telefonie */
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 20px;
+                backdrop-filter: blur(2px);
             }
 
-            .discord-item {
-                grid-column: span 2; 
-                justify-self: center;
-            }
-
-            /* Większy dymek na mobile */
+            /* Discord tooltip - ulepszenie dla mobile */
             .discord-tooltip {
                 top: 130%; 
-                padding: 10px 20px; 
                 font-size: 1.0rem; 
-                background: rgba(255, 255, 255, 0.15);
-                border: 1px solid rgba(255, 255, 255, 0.3);
+                font-weight: 500;
+                padding: 10px 25px; 
+                background: rgba(20, 20, 20, 0.9); /* Ciemniejsze tło */
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             }
 
             .logo-layer {
